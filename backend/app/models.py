@@ -61,3 +61,21 @@ class DomandaIscrizione(Base):
         ),  # native_enum=False per problema con DB
         default=StatoDomanda.inviata,
     )
+
+
+class Utente(Base):
+    """Account di accesso alla piattaforma; creato all'ammissione del socio."""
+
+    __tablename__ = "utente"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    persona_id: Mapped[int] = mapped_column(ForeignKey("persona.id"), unique=True)
+    username: Mapped[str] = mapped_column(String(30), unique=True)
+    password_hash: Mapped[str | None] = mapped_column(String(255))
+    token_attivazione_hash: Mapped[str | None] = mapped_column(String(255))
+    token_scadenza: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
+    attivo: Mapped[bool] = mapped_column(Boolean, default=True)
+    creato_il: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
