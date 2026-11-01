@@ -15,6 +15,18 @@ class StatoDomanda(str, enum.Enum):
     rigettata = "rigettata"
 
 
+class StatoSocio(str, enum.Enum):
+    attivo = "attivo"
+    sospeso = "sospeso"
+    cessato = "cessato"
+
+
+class Carica(str, enum.Enum):
+    presidente = "presidente"
+    vicepresidente = "vicepresidente"
+    consigliere = "consigliere"
+
+
 class Persona(Base):
     """Anagrafica di chi presenta domanda di iscrizione o è socio"""
 
@@ -79,3 +91,34 @@ class Utente(Base):
     creato_il: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
+
+
+class Socio(Base):
+    """Persona ammessa all'associazione (libro soci)."""
+
+    __tablename__ = "socio"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    persona_id: Mapped[int] = mapped_column(ForeignKey("persona.id"), unique=True)
+    domanda_id: Mapped[int | None] = mapped_column(
+        ForeignKey("domanda_iscrizione.id"), unique=True
+    )
+    numero_tessera: Mapped[str] = mapped_column(String(20), unique=True)
+    stato: Mapped[StatoSocio] = mapped_column(
+        Enum(StatoSocio, native_enum=False, length=20),
+        default=StatoSocio.attivo,
+    )
+    data_ammissione: Mapped[date] = mapped_column(Date)
+    data_scadenza: Mapped[date] = mapped_column(Date)
+
+
+class MembroDirettivo(Base):
+    """Mandato di un membro del direttivo; attivo se data_fine è nulla."""
+
+    __tablename__ = "membro_direttivo"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    utente_id: Mapped[int] = mapped_column(ForeignKey("utente.id"), index=True)
+    carica: Mapped[Carica] = mapped_column(Enum(Carica, native_enum=False, length=20))
+    data_inizio: Mapped[date] = mapped_column(Date)
+    data_fine: Mapped[date | None] = mapped_column(Date)
