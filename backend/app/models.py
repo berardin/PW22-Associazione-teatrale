@@ -74,15 +74,26 @@ class Persona(Base):
     provincia: Mapped[str] = mapped_column(String(2))
 
 
+class InformativaPrivacy(Base):
+    """Versione dell'informativa privacy; quella in vigore è la più recente."""
+
+    __tablename__ = "informativa_privacy"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    versione: Mapped[str] = mapped_column(String(20), unique=True)
+    testo: Mapped[str] = mapped_column(Text)
+    in_vigore_dal: Mapped[date] = mapped_column(Date)
+
+
 class ConsensoPrivacy(Base):
-    """Consenso privacy per la persona"""
+    """Consenso espresso da una persona su una versione dell'informativa."""
 
     __tablename__ = "consenso_privacy"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    persona_id: Mapped[int] = mapped_column(ForeignKey("persona.id"))
+    persona_id: Mapped[int] = mapped_column(ForeignKey("persona.id"), index=True)
+    informativa_id: Mapped[int] = mapped_column(ForeignKey("informativa_privacy.id"))
     tipo: Mapped[str] = mapped_column(String(50))
-    versione_informativa: Mapped[str] = mapped_column(String(20))
     accettato: Mapped[bool] = mapped_column(Boolean)
     data: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
