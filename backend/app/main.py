@@ -1,9 +1,20 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
+from app.core.config import settings
 from app.db import engine
 
-app = FastAPI(title="Piattaforma Soci - Associazione Teatrale")
+app = FastAPI(title="Piattaforma Soci - Associazione Teatrale TeatrAmico")
+
+cors_origins: str = "http://localhost:5173"
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origins.split(","),
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allow_headers=["Authorization", "Content-Type"],
+)
 
 
 @app.get("/health")
