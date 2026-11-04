@@ -1,23 +1,15 @@
-import { useEffect, useState } from "react";
+import { Route, Routes } from "react-router-dom";
+import Layout from "./components/Layout";
+import Home from "./pages/Home";
+import Vuota from "./pages/Vuota";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
-
-function App() {
-  const [stato, setStato] = useState("verifica in corso...");
-
-  useEffect(() => {
-    fetch(`${API_URL}/health`)
-      .then((r) => r.json())
-      .then((dati) => setStato(`backend: ${dati.status}`))
-      .catch(() => setStato("backend non raggiungibile"));
-  }, []);
-
+export default function App() {
   return (
-    <main>
-      <h1>TeatrAmico</h1>
-      <p>{stato}</p>
-    </main>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="*" element={<Vuota />} />
+      </Route>
+    </Routes>
   );
 }
-
-export default App;

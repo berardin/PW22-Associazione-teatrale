@@ -1,0 +1,15 @@
+:root {
+  --avorio: #f6f0df;
+  --avorio-scuro: #efe6cc;
+  --verde: #14502f;
+  --verde-scuro: #0a3d27;
+  --verde-notte: #051f15;
+  --oro: #b8862b;
+  --oro-chiaro: #e3c26b;
+  --oro-scuro: #8a6212;
+  --bordo: #d9c48a;
+  --testo: #2f2f24;
+
+  --font-titoli: "Cinzel", serif;
+  --font-testo: "Lora", Georgia, serif;
+}
