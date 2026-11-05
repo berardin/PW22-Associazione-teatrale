@@ -17,6 +17,7 @@ class Statuto(BaseSettings):
     max_membri_direttivo: int = 7
     mesi_per_voto_assemblea: int = 3
     durata_quota_mesi: int = 12
+    eta_minima: int = 18
 
 
 statuto = Statuto()

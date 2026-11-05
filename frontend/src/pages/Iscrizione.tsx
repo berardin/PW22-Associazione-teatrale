@@ -35,6 +35,20 @@ const VUOTO: Dati = {
   foto: false,
 };
 
+const ETA_MINIMA = 18; // deve coincidere con l'età nel backend
+
+function eta(nascita: string): number {
+  const n = new Date(nascita);
+  const o = new Date();
+  let anni = o.getFullYear() - n.getFullYear();
+  if (
+    o.getMonth() < n.getMonth() ||
+    (o.getMonth() === n.getMonth() && o.getDate() < n.getDate())
+  )
+    anni--;
+  return anni;
+}
+
 // Validazione dati form
 function valida(d: Dati): Errori {
   const e: Errori = {};
@@ -46,6 +60,8 @@ function valida(d: Dati): Errori {
   if (!d.dataNascita) e.dataNascita = "Inserisci la data di nascita.";
   else if (d.dataNascita >= oggi)
     e.dataNascita = "La data di nascita deve essere nel passato.";
+  else if (eta(d.dataNascita) < ETA_MINIMA)
+    e.dataNascita = `Per iscriversi serve avere almeno ${ETA_MINIMA} anni.`;
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email))
     e.email = "Inserisci un indirizzo email valido.";
   if (!d.indirizzo.trim()) e.indirizzo = "Inserisci l'indirizzo.";

@@ -1,11 +1,20 @@
 from datetime import date
 from typing import Annotated
+from app.core.config import statuto
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator
 
 Testo100 = Annotated[
     str, StringConstraints(strip_whitespace=True, min_length=1, max_length=100)
 ]
+
+
+def calcola_eta(nascita: date, oggi: date) -> int:
+    return (
+        oggi.year
+        - nascita.year
+        - ((oggi.month, oggi.day) < (nascita.month, nascita.day))
+    )
 
 
 class DomandaIn(BaseModel):
@@ -45,9 +54,14 @@ class DomandaIn(BaseModel):
 
     @field_validator("data_nascita")
     @classmethod
-    def nascita_nel_passato(cls, v: date) -> date:
-        if v >= date.today() or v.year < 1900:
+    def nascita_valida(cls, v: date) -> date:
+        oggi = date.today()
+        if v >= oggi or v.year < 1900:
             raise ValueError("data di nascita non valida")
+        if calcola_eta(v, oggi) < statuto.eta_minima:
+            raise ValueError(
+                f"per iscriversi serve avere almeno {statuto.eta_minima} anni"
+            )
         return v
 
     @field_validator("consenso_informativa")
