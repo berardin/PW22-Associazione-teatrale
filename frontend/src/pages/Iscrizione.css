@@ -1,0 +1,175 @@
+.fascia {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: 56px 24px 130px;
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    #1e6b45 0%,
+    #0a3d27 48%,
+    #051f15 100%
+  );
+  color: var(--avorio);
+}
+.fascia-onda {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 120px;
+}
+.fascia-testo {
+  position: relative;
+}
+.fascia h1 {
+  margin: 0 0 10px;
+  font-size: clamp(30px, 5vw, 48px);
+  letter-spacing: 0.04em;
+  color: var(--avorio);
+}
+.fascia p {
+  margin: 0 auto;
+  max-width: 620px;
+  font-size: 17px;
+  color: #dce6d8;
+}
+
+.pagina-form {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 8px 24px 80px;
+}
+.pagina-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.pagina-form fieldset {
+  border: 1px solid var(--oro);
+  border-radius: 16px;
+  margin: 0;
+  padding: 28px;
+  background: rgba(255, 255, 255, 0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+.pagina-form legend {
+  padding: 0 12px;
+  font-family: var(--font-titoli);
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--verde);
+}
+.riga {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.campo label {
+  font-size: 14px;
+  color: var(--verde);
+  font-weight: 500;
+}
+.campo input {
+  height: 48px;
+  background: #fff;
+  color: var(--testo);
+  border: 1px solid var(--oro);
+  border-radius: 10px;
+  padding: 0 14px;
+  font-size: 16px;
+  font-family: inherit;
+  width: 100%;
+}
+.campo input[aria-invalid="true"],
+.spunta input[aria-invalid="true"] {
+  border-color: #8c2f17;
+  outline: 2px solid #8c2f17;
+}
+.maiuscolo {
+  text-transform: uppercase;
+}
+.facoltativo {
+  color: #6b5a2a;
+  font-weight: 400;
+}
+.errore {
+  color: #8c2f17;
+  font-size: 14px;
+}
+.obbligatorio {
+  color: var(--oro-scuro);
+}
+
+.informativa {
+  border: 1px solid var(--bordo);
+  border-radius: 10px;
+  background: #fff;
+  padding: 18px 22px;
+  max-height: 150px;
+  overflow: auto;
+  font-size: 14px;
+}
+.spunta {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.spunta input {
+  width: 24px;
+  height: 24px;
+  margin: 2px 0 0;
+  accent-color: var(--verde);
+  flex: none;
+}
+.spunta label {
+  font-size: 15px;
+}
+
+.invio {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.invio p {
+  margin: 0;
+  max-width: 380px;
+  font-size: 14px;
+}
+.btn-verde {
+  background: var(--verde);
+  color: var(--avorio);
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0 40px;
+  height: 52px;
+}
+.btn-verde:hover {
+  color: var(--avorio);
+  filter: brightness(1.15);
+}
+
+.esito {
+  border: 1px solid var(--oro);
+  border-radius: 16px;
+  padding: 28px;
+  background: rgba(255, 255, 255, 0.55);
+}
+.esito pre {
+  overflow: auto;
+  background: #fff;
+  padding: 16px;
+  border-radius: 10px;
+  font-size: 13px;
+}

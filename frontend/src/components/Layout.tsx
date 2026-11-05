@@ -1,20 +1,28 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 
 function Logo() {
   return (
-    <NavLink to="/" className="logo" aria-label="TeatrAmico, home">
+    <Link to="/" className="logo" aria-label="TeatrAmico, home">
       <span aria-hidden="true">Teatr</span>
       <span aria-hidden="true" className="logo-a">
         A
       </span>
       <span aria-hidden="true">mico</span>
-    </NavLink>
+    </Link>
   );
 }
 
 export default function Layout() {
+  const { pathname, hash } = useLocation();
   const classe = ({ isActive }: { isActive: boolean }) =>
     isActive ? "attivo" : undefined;
+
+  // Scorre al punto indicato dall'ancora; senza ancora torna in cima.
+  useEffect(() => {
+    if (hash) document.getElementById(hash.slice(1))?.scrollIntoView();
+    else window.scrollTo(0, 0);
+  }, [pathname, hash]);
 
   return (
     <div className="layout">
@@ -24,10 +32,11 @@ export default function Layout() {
           <NavLink to="/corsi" className={classe}>
             Corsi
           </NavLink>
-          <NavLink to="/#chi-siamo">Chi siamo</NavLink>
+          <Link to="/#chi-siamo">Chi siamo</Link>
           <NavLink to="/iscrizione" className={classe}>
             Diventa socio
           </NavLink>
+          <Link to="/#contatti">Contatti</Link>
           <NavLink to="/accesso" className="accedi">
             Accedi
           </NavLink>
@@ -36,10 +45,20 @@ export default function Layout() {
       <main>
         <Outlet />
       </main>
-      <footer className="footer">
-        <strong>TeatrAmico</strong>
-        <span>[Indirizzo della sede] · [email] · [telefono]</span>
-        <span>Informativa privacy · Statuto</span>
+      <footer id="contatti" className="footer">
+        <div className="riquadro">
+          <strong>Sede</strong>
+          <span>[Indirizzo della sede]</span>
+        </div>
+        <div className="riquadro">
+          <strong>Info e contatti</strong>
+          <span>[email] · [telefono]</span>
+        </div>
+        <div className="riquadro">
+          <strong>Informazioni</strong>
+          <Link to="/privacy">Informativa privacy</Link>
+          <Link to="/statuto">Statuto</Link>
+        </div>
       </footer>
     </div>
   );

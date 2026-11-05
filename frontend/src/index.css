@@ -88,16 +88,31 @@ h3 {
 .footer {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 12px 40px;
-  padding: 28px 48px;
+  gap: 24px;
+  padding: 40px 48px;
   background: var(--avorio-scuro);
   border-top: 1px solid var(--bordo);
-  font-size: 14px;
+}
+.footer .riquadro {
+  flex: 1 1 260px;
+  border: 1px solid var(--oro);
+  border-radius: 14px;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 15px;
 }
 .footer strong {
   font-family: var(--font-titoli);
   color: var(--verde);
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.footer a {
+  color: var(--verde);
+  text-decoration: underline;
 }
 
 @media (max-width: 640px) {
