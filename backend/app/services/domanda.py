@@ -66,7 +66,18 @@ def presenta_domanda(db: Session, dati: DomandaIn) -> DomandaIscrizione:
             )
         )
         if aperta is not None:
-            raise DomandaEsistente("Risulta già una domanda in corso per questi dati")
+            giorni = (aperta.scadenza_risposta - date.today()).days
+            if giorni >= 0:
+                msg = (
+                    f"Risulta già una domanda in corso per questi dati: il direttivo risponde "
+                    f"entro il {aperta.scadenza_risposta:%d/%m/%Y} (tra {giorni} giorni al massimo)."
+                )
+            else:
+                msg = (
+                    f"Risulta già una domanda in corso per questi dati: il termine per la risposta "
+                    f"({aperta.scadenza_risposta:%d/%m/%Y}) è scaduto."
+                )
+            raise DomandaEsistente(msg)
     else:
         persona = Persona(codice_fiscale=dati.codice_fiscale)
         db.add(persona)

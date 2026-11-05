@@ -5,6 +5,8 @@ from sqlalchemy import text
 from app.core.config import settings
 from app.db import engine
 
+from app.routers import domande
+
 app = FastAPI(title="Piattaforma Soci - Associazione Teatrale TeatrAmico")
 
 cors_origins: str = "http://localhost:5173"
@@ -15,6 +17,8 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
     allow_headers=["Authorization", "Content-Type"],
 )
+
+app.include_router(domande.router)
 
 
 @app.get("/health")

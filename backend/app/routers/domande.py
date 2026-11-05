@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.deps import get_db
 from app.schemas.domanda import DomandaIn, DomandaOut
-from app.services import domanda_service as service
+from app.services import domanda as service
 
 router = APIRouter(prefix="/domande", tags=["domande"])
 
