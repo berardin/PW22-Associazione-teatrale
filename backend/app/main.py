@@ -5,7 +5,7 @@ from sqlalchemy import text
 from app.core.config import settings
 from app.db import engine
 
-from app.routers import domande
+from app.routers import domande, informativa, statuto
 
 app = FastAPI(title="Piattaforma Soci - Associazione Teatrale TeatrAmico")
 
@@ -19,6 +19,8 @@ app.add_middleware(
 )
 
 app.include_router(domande.router)
+app.include_router(informativa.router)
+app.include_router(statuto.router)
 
 
 @app.get("/health")

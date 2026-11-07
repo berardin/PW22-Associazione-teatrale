@@ -49,6 +49,13 @@ class DomandaIn(BaseModel):
         StringConstraints(strip_whitespace=True, to_upper=True, pattern=r"^[A-Z]{2}$"),
     ]
     consenso_informativa: bool
+    informativa_versione: Annotated[
+        str, StringConstraints(strip_whitespace=True, min_length=1, max_length=20)
+    ]
+    consenso_statuto: bool
+    statuto_versione: Annotated[
+        str, StringConstraints(strip_whitespace=True, min_length=1, max_length=20)
+    ]
     newsletter: bool = False
     foto: bool = False
 
@@ -64,13 +71,16 @@ class DomandaIn(BaseModel):
             )
         return v
 
-    @field_validator("consenso_informativa")
+    @field_validator("consenso_informativa", "consenso_statuto")
     @classmethod
-    def consenso_obbligatorio(cls, v: bool) -> bool:
+    def accettazione_obbligatoria(cls, v: bool, info: ValidationInfo) -> bool:
         if not v:
-            raise ValueError(
-                "il consenso al trattamento per l'iscrizione è obbligatorio"
+            cosa = (
+                "dell'informativa"
+                if info.field_name == "consenso_informativa"
+                else "dello statuto"
             )
+            raise ValueError(f"la presa visione {cosa} è obbligatoria")
         return v
 
 
