@@ -1,6 +1,6 @@
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 
-from sqlalchemy import desc, or_, select
+from sqlalchemy import or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -9,7 +9,6 @@ from app.models import (
     AuditLog,
     ConsensoPrivacy,
     DomandaIscrizione,
-    InformativaPrivacy,
     Persona,
     Socio,
     StatoDomanda,
@@ -17,29 +16,33 @@ from app.models import (
 )
 from app.schemas.domanda import DomandaIn
 
+from app.services.informativa import InformativaMancante, informativa_in_vigore
+from app.services.statuto import StatutoMancante, statuto_in_vigore
+
 
 class DomandaEsistente(Exception):
     """Esiste già una domanda aperta, o la persona è già socia."""
 
 
-class InformativaMancante(Exception):
-    """Nessuna informativa in vigore: configurazione errata."""
+class InformativaCambiata(Exception):
+    """L'informativa letta dall'utente non è più quella in vigore."""
 
 
-def _informativa_in_vigore(db: Session) -> InformativaPrivacy:
-    inf = db.scalar(
-        select(InformativaPrivacy)
-        .where(InformativaPrivacy.in_vigore_dal <= date.today())
-        .order_by(desc(InformativaPrivacy.in_vigore_dal))
-        .limit(1)
-    )
-    if inf is None:
-        raise InformativaMancante("Nessuna informativa privacy in vigore")
-    return inf
+class StatutoCambiato(Exception):
+    """Lo statuto letto dall'utente non è più quello in vigore."""
 
 
 def presenta_domanda(db: Session, dati: DomandaIn) -> DomandaIscrizione:
-    informativa = _informativa_in_vigore(db)
+    informativa = informativa_in_vigore(db)
+    if dati.informativa_versione != informativa.versione:
+        raise InformativaCambiata(
+            "L'informativa è stata aggiornata: ricarica la pagina e leggila di nuovo."
+        )
+    statuto_vigente = statuto_in_vigore(db)
+    if dati.statuto_versione != statuto_vigente.versione:
+        raise StatutoCambiato(
+            "Lo statuto è stato aggiornato: ricarica la pagina e leggilo di nuovo."
+        )
 
     trovate = db.scalars(
         select(Persona).where(
@@ -100,6 +103,8 @@ def presenta_domanda(db: Session, dati: DomandaIn) -> DomandaIscrizione:
             data_presentazione=oggi,
             scadenza_risposta=oggi + timedelta(days=parametri.scadenza_risposta_giorni),
             stato=StatoDomanda.inviata,
+            statuto_id=statuto_vigente.id,
+            statuto_accettato_il=datetime.now(timezone.utc),
         )
         db.add(domanda)
 

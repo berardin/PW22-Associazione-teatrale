@@ -2,7 +2,13 @@ from datetime import date
 from typing import Annotated
 from app.core.config import parametri
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    StringConstraints,
+    ValidationInfo,
+    field_validator,
+)
 
 Testo100 = Annotated[
     str, StringConstraints(strip_whitespace=True, min_length=1, max_length=100)

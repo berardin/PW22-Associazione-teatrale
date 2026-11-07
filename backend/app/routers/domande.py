@@ -15,7 +15,9 @@ def presenta_domanda(dati: DomandaIn, db: Session = Depends(get_db)):
         return service.presenta_domanda(db, dati)
     except service.DomandaEsistente as e:
         raise HTTPException(status.HTTP_409_CONFLICT, detail=str(e))
-    except service.InformativaMancante:
+    except (service.InformativaCambiata, service.StatutoCambiato) as e:
+        raise HTTPException(status.HTTP_409_CONFLICT, detail=str(e))
+    except (service.InformativaMancante, service.StatutoMancante):
         raise HTTPException(
             status.HTTP_503_SERVICE_UNAVAILABLE, detail="Servizio non disponibile"
         )
