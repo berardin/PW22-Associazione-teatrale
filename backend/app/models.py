@@ -124,6 +124,10 @@ class DomandaIscrizione(Base):
         ),  # native_enum=False per problema con DB
         default=StatoDomanda.inviata,
     )
+    statuto_id: Mapped[int | None] = mapped_column(ForeignKey("statuto.id"))
+    statuto_accettato_il: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True)
+    )
 
 
 class Utente(Base):
