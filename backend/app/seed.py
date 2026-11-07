@@ -14,6 +14,7 @@ from app.models import (
     DomandaIscrizione,
     EsitoDelibera,
     InformativaPrivacy,
+    Statuto,
     MembroDirettivo,
     Pagamento,
     Persona,
@@ -28,6 +29,42 @@ from app.models import (
 
 PASSWORD_DEMO = "TeatramicoDemo-2026!"
 PASSWORD_ADMIN = "TeatramicoAdmin-2026!"
+
+TESTO_STATUTO = """STATUTO DELL'ASSOCIAZIONE TEATRAMICO
+
+Art. 1 – Lorem ipsum
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua, sede in Lorem Civitas, via Ipsum n. 1.
+
+Art. 2 – Dolor sit amet
+Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse.
+
+Art. 3 – Consectetur adipiscing
+Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum:
+a) Curabitur pretium tincidunt lacus, nulla gravida orci a odio;
+b) Nullam varius, turpis et commodo pharetra, est eros bibendum elit;
+c) Integer in mauris eu nibh euismod gravida.
+
+Art. 4 – Sed do eiusmod
+Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat, nam dui mi, tincidunt quis.
+
+Art. 5 – Tempor incididunt
+Phasellus ultrices nulla quis nibh. Quisque a lectus. Donec consectetuer ligula vulputate sem tristique cursus. Nam nulla quam, gravida non, commodo a, sodales sit amet.
+
+Art. 6 – Labore et dolore
+Organa lorem sunt:
+a) Assemblea Ipsum;
+b) Consilium Dolor;
+c) Praeses Amet.
+
+Art. 7 – Magna aliqua
+Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae. Fusce id purus, ut varius tincidunt libero, mauris sit amet magna.
+
+Art. 8 – Ut enim ad minim
+Morbi in sem quis dui placerat ornare. Pellentesque odio nisi, euismod in, pharetra a, ultricies in, diam. Sed arcu, cras consequat.
+
+Art. 9 – Disposizioni finali
+Mauris eleifend leo quis libero tristique, pro omnibus non expressis lorem ipsum dolor sit amet.
+"""
 
 OGGI = date.today()
 _contatore = 0
@@ -112,13 +149,16 @@ def nuovo_socio(db, persona, tessera, ammissione, domanda_id=None):
     return s
 
 
-def nuova_domanda(db, persona, stato, giorni_fa, informativa):
+def nuova_domanda(db, persona, stato, giorni_fa, informativa, statuto):
     presentata = OGGI - timedelta(days=giorni_fa)
     d = DomandaIscrizione(
         persona_id=persona.id,
         data_presentazione=presentata,
-        scadenza_risposta=presentata + timedelta(days=parametri.scadenza_risposta_giorni),
+        scadenza_risposta=presentata
+        + timedelta(days=parametri.scadenza_risposta_giorni),
         stato=stato,
+        statuto_id=statuto.id,
+        statuto_accettato_il=datetime.now(timezone.utc),
     )
     db.add(d)
     db.flush()
@@ -146,6 +186,13 @@ def esegui():
             testo="[Testo dell'informativa sul trattamento dei dati]",
         )
         db.add(inf)
+        db.flush()
+
+        # Statuto
+        stat = Statuto(
+            versione="1.0", in_vigore_dal=date(2026, 1, 1), testo=TESTO_STATUTO
+        )
+        db.add(stat)
         db.flush()
 
         # Admin tecnico (non socio, non direttivo)
@@ -177,7 +224,7 @@ def esegui():
 
         # Socio ammesso da poco (domanda approvata, voto in assemblea tra ~40 giorni)
         p = nuova_persona(db, "Giulia", "Bianchi", date(1994, 3, 14))
-        d = nuova_domanda(db, p, StatoDomanda.approvata, 70, inf)
+        d = nuova_domanda(db, p, StatoDomanda.approvata, 70, inf, stat)
         nuovo_utente(db, p, "giulia.bianchi", PASSWORD_DEMO)
         nuovo_socio(db, p, "T-0008", OGGI - timedelta(days=50), domanda_id=d.id)
 
@@ -188,6 +235,7 @@ def esegui():
             StatoDomanda.inviata,
             50,
             inf,
+            stat,
         )
         nuova_domanda(
             db,
@@ -195,6 +243,7 @@ def esegui():
             StatoDomanda.inviata,
             3,
             inf,
+            stat,
         )
 
         # Domanda in delibera con 3 voti su 7
@@ -204,6 +253,7 @@ def esegui():
             StatoDomanda.in_delibera,
             20,
             inf,
+            stat,
         )
         delibera = Delibera(domanda_id=d.id)
         db.add(delibera)
@@ -218,6 +268,7 @@ def esegui():
             StatoDomanda.rigettata,
             45,
             inf,
+            stat,
         )
         delibera = Delibera(
             domanda_id=d.id,
