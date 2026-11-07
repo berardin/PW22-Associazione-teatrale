@@ -20,4 +20,4 @@ class ParametriStatuto(BaseSettings):
     eta_minima: int = 18
 
 
-statuto = ParametriStatuto()
+parametri = ParametriStatuto()
