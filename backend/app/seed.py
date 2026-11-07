@@ -4,7 +4,7 @@ from datetime import date, datetime, timedelta, timezone
 
 from sqlalchemy import select
 
-from app.core.config import statuto
+from app.core.config import parametri
 from app.core.security import hash_password
 from app.db import SessionLocal
 from app.models import (
@@ -95,7 +95,7 @@ def nuovo_socio(db, persona, tessera, ammissione, domanda_id=None):
         numero_tessera=tessera,
         stato=StatoSocio.attivo,
         data_ammissione=ammissione,
-        data_scadenza=aggiungi_mesi(ammissione, statuto.durata_quota_mesi),
+        data_scadenza=aggiungi_mesi(ammissione, parametri.durata_quota_mesi),
     )
     db.add(s)
     db.flush()
@@ -117,7 +117,7 @@ def nuova_domanda(db, persona, stato, giorni_fa, informativa):
     d = DomandaIscrizione(
         persona_id=persona.id,
         data_presentazione=presentata,
-        scadenza_risposta=presentata + timedelta(days=statuto.scadenza_risposta_giorni),
+        scadenza_risposta=presentata + timedelta(days=parametri.scadenza_risposta_giorni),
         stato=stato,
     )
     db.add(d)

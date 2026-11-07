@@ -10,7 +10,7 @@ class Settings(BaseSettings):
 settings = Settings()
 
 
-class Statuto(BaseSettings):
+class ParametriStatuto(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="STATUTO_")
     scadenza_risposta_giorni: int = 60
     quorum_direttivo: int = 4
@@ -20,4 +20,4 @@ class Statuto(BaseSettings):
     eta_minima: int = 18
 
 
-statuto = Statuto()
+statuto = ParametriStatuto()

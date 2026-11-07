@@ -4,7 +4,7 @@ from sqlalchemy import desc, or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.core.config import statuto
+from app.core.config import parametri
 from app.models import (
     AuditLog,
     ConsensoPrivacy,
@@ -98,7 +98,7 @@ def presenta_domanda(db: Session, dati: DomandaIn) -> DomandaIscrizione:
         domanda = DomandaIscrizione(
             persona_id=persona.id,
             data_presentazione=oggi,
-            scadenza_risposta=oggi + timedelta(days=statuto.scadenza_risposta_giorni),
+            scadenza_risposta=oggi + timedelta(days=parametri.scadenza_risposta_giorni),
             stato=StatoDomanda.inviata,
         )
         db.add(domanda)

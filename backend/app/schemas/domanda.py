@@ -1,6 +1,6 @@
 from datetime import date
 from typing import Annotated
-from app.core.config import statuto
+from app.core.config import parametri
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator
 
@@ -58,9 +58,9 @@ class DomandaIn(BaseModel):
         oggi = date.today()
         if v >= oggi or v.year < 1900:
             raise ValueError("data di nascita non valida")
-        if calcola_eta(v, oggi) < statuto.eta_minima:
+        if calcola_eta(v, oggi) < parametri.eta_minima:
             raise ValueError(
-                f"per iscriversi serve avere almeno {statuto.eta_minima} anni"
+                f"per iscriversi serve avere almeno {parametri.eta_minima} anni"
             )
         return v
 

@@ -85,6 +85,17 @@ class InformativaPrivacy(Base):
     in_vigore_dal: Mapped[date] = mapped_column(Date)
 
 
+class Statuto(Base):
+    """Versione dello statuto; quella in vigore è la più recente."""
+
+    __tablename__ = "statuto"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    versione: Mapped[str] = mapped_column(String(20), unique=True)
+    testo: Mapped[str] = mapped_column(Text)
+    in_vigore_dal: Mapped[date] = mapped_column(Date)
+
+
 class ConsensoPrivacy(Base):
     """Consenso espresso da una persona su una versione dell'informativa."""
 
